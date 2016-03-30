@@ -2,7 +2,6 @@
 
 ### Requirements
 
-* python
 * docker
 * docker-compose
 

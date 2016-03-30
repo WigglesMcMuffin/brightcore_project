@@ -3,7 +3,7 @@ services:
     web:
         build: .
         command: gunicorn -c gunicorn_conf.py flask_app:app
-        container_name: brightcove_example
+        container_name: brightcove_project
         volumes:
             - .:/code
         ports:
