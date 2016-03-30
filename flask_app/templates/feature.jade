@@ -1,0 +1,30 @@
+extends base.jade
+
+block main
+	.container-fluid
+		.row
+			.col-md-6
+				h1 Feature Requests
+				h2
+					= feature.title
+					small
+						| &nbsp;-&nbsp;
+						= feature.client.name
+				.row
+					p.pull-right
+						| Target Date:
+						= feature.target_date
+					p.pull-left 
+						| Ticket Priority: #
+						= feature.client_priority
+				.row
+					p= feature.description
+				.row
+					p.text-left= feature.ticket_url
+			.col-md-4.col-md-offset-2.control-panel
+				h2 Control Panel
+				ul
+					li Admin functions
+					li promote
+					li demote
+					li remove

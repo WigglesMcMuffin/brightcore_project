@@ -1,0 +1,44 @@
+extends base.jade
+
+block scripts
+	script.
+		$('#dp1').datepicker({format: 'mm-dd-yyyy'});
+
+block main
+	.container-fluid
+		.row
+			h1 Home Page
+			h2 Add New Feature Requests
+			.row
+				.col-md-6
+					form(action=url_for('new_feature'), method='post', name='feature')
+						= request_form.hidden_tag()
+						.form-group
+							{{ request_form.title(placeholder='title', class='form-control') }}
+						.form-group
+							{{ request_form.description(class='form-control') }}
+						.form-group
+							{{ request_form.client_id(class='form-control') }}
+						.form-group
+							{{ request_form.client_priority(placeholder='Client Priority', class='form-control') }}
+						.form-group
+							{{ request_form.target_date(placeholder='Target Date', id='dp1', class='form-control') }}
+						.form-group
+							{{ request_form.ticket_url(placeholder='Ticket URL', class='form-control') }}
+						.form-group
+							{{ request_form.product_area_id(class='form-control') }}
+						button.btn.btn-success(type='submit') Create
+				.col-md-3.col-md-offset-2
+					h3 Add new client
+					form(action=url_for('new_client'), method='post', name='client')
+						= client_form.hidden_tag()
+						.form-group
+							{{ client_form.name(placeholder='New Client Name', class='form-control') }}
+						button.btn.btn-success(type='submit') Create
+					hr
+					h3 Add new Product Area
+					form(action=url_for('new_product_area'), method='post', name='client')
+						= product_form.hidden_tag()
+						.form-group
+							{{ product_form.name(placeholder='New Product Area', class='form-control') }}
+						button.btn.btn-success(type='submit') Create

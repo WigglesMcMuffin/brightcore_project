@@ -1,0 +1,17 @@
+extends base.jade
+
+block scripts
+	script.
+		$('#dp1').datepicker({format: 'mm-dd-yyyy'});
+
+block main
+	.container-fluid
+		.row
+			h1 Feature Requests
+			for client in features_by_client
+				h3= client
+				.list-group.client_features
+					for feature in features_by_client[client]
+						a.list-group-item(href=url_for('feature', feature_id=feature.id))
+							= feature.title
+							span.badge= feature.client_priority
