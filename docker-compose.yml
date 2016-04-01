@@ -2,8 +2,8 @@ version: '2'
 services:
     web:
         build: .
-        command: gunicorn -c gunicorn_conf.py flask_app:app
-        container_name: brightcove_project
+        command: gunicorn -c gunicorn_conf.py "flask_app:create_app()"
+        container_name: britecore_project
         volumes:
             - .:/code
         ports:

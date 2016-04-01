@@ -1,10 +1,11 @@
 from flask import render_template, redirect, flash, url_for
 from itertools import groupby
 
-from flask_app import app
-from flask_app.database import db_session
+from flask_app import create_app, db
 from flask_app.forms import FeatureRequestForm, ClientForm, ProductAreaForm
 from flask_app.models import Feature, Client, Product
+
+app = create_app()
 
 @app.route('/')
 def main_page():
@@ -46,8 +47,8 @@ def new_feature():
 		product_area_id = form.product_area_id.data
 		#Feature.query.filter('client_priority' = client_priority).all()
 		f = Feature(title=title, description=description, client_id=client_id, client_priority=client_priority, target_date=target_date, ticket_url=ticket_url, product_area_id=product_area_id)
-		db_session.add(f)
-		db_session.commit()
+		db.session.add(f)
+		db.session.commit()
 		flash('Feature added', 'list-group-item-success')
 	else:
 		flash('Feature addition failed', 'list-group-item-danger')
@@ -59,8 +60,8 @@ def new_client():
 	if form.validate_on_submit():
 		name = form.name.data
 		c = Client(name=name)
-		db_session.add(c)
-		db_session.commit()
+		db.session.add(c)
+		db.session.commit()
 		flash('Client Added', 'list-group-item-info')
 	else:
 		flash('Client addition failed', 'list-group-item-warning')
@@ -72,8 +73,8 @@ def new_product_area():
 	if form.validate_on_submit():
 		name = form.name.data
 		p = Product(name=name)
-		db_session.add(p)
-		db_session.commit()
+		db.session.add(p)
+		db.session.commit()
 		flash('Product Area added', 'list-group-item-info')
 	else:
 		flash('Product Area addition failed', 'list-group-item-warning')
