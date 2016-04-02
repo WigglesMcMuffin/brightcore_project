@@ -1,47 +1,13 @@
-from itertools import groupby
-from flask import render_template, redirect, flash, url_for
+from flask import Blueprint, redirect, flash, url_for
 
-from flask_app import create_app, db
+from flask_app import db
 from flask_app.forms import FeatureRequestForm, ClientForm, ProductAreaForm
 from flask_app.models import Feature, Client, Product
 
-app = create_app()
 
+form_endpoints = Blueprint('forms', __name__)
 
-@app.route('/')
-def main_page():
-    request_form = FeatureRequestForm()
-    request_form.client_id.choices = [(c.id, c.name) for c in Client.query.all()]
-    request_form.product_area_id.choices = [(p.id, p.name) for p in Product.query.all()]
-    client_form = ClientForm()
-    product_form = ProductAreaForm()
-    return render_template('main.jade',
-                           pageTitle='Home Page',
-                           request_form=request_form,
-                           client_form=client_form,
-                           product_form=product_form)
-
-
-@app.route('/features/')
-def features():
-    def keyfunc(x):
-        return x.client.name
-    features_by_client = groupby(sorted(Feature.query.all(), key=keyfunc), keyfunc)
-    features_by_client = {c: sorted(list(f), key=lambda x: x.client_priority) for c, f in features_by_client}
-    return render_template('features.jade',
-                           pageTitle='Current Features',
-                           features_by_client=features_by_client)
-
-
-@app.route('/features/<feature_id>')
-def feature(feature_id):
-    selected_feature = Feature.query.get(feature_id)
-    return render_template('feature.jade',
-                           pageTitle='Home Page',
-                           feature=selected_feature)
-
-
-@app.route('/feature', methods=['POST'])
+@form_endpoints.route('/feature', methods=['POST'])
 def new_feature():
     form = FeatureRequestForm()
     form.client_id.choices = [(c.id, c.name) for c in Client.query.all()]
@@ -66,10 +32,10 @@ def new_feature():
         flash('Feature added', 'list-group-item-success')
     else:
         flash('Feature addition failed', 'list-group-item-danger')
-    return redirect(url_for('main_page'))
+    return redirect(url_for('main.main_page'))
 
 
-@app.route('/client', methods=['POST'])
+@form_endpoints.route('/client', methods=['POST'])
 def new_client():
     form = ClientForm()
     if form.validate_on_submit():
@@ -80,10 +46,10 @@ def new_client():
         flash('Client Added', 'list-group-item-info')
     else:
         flash('Client addition failed', 'list-group-item-warning')
-    return redirect(url_for('main_page'))
+    return redirect(url_for('main.main_page'))
 
 
-@app.route('/product', methods=['POST'])
+@form_endpoints.route('/product', methods=['POST'])
 def new_product_area():
     form = ProductAreaForm()
     if form.validate_on_submit():
@@ -94,4 +60,4 @@ def new_product_area():
         flash('Product Area added', 'list-group-item-info')
     else:
         flash('Product Area addition failed', 'list-group-item-warning')
-    return redirect(url_for('main_page'))
+    return redirect(url_for('main.main_page'))

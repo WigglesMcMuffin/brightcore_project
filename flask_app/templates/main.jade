@@ -11,7 +11,7 @@ block main
 			h2 Add New Feature Requests
 			.row
 				.col-md-6
-					form(action=url_for('new_feature'), method='post', name='feature')
+					form(action=url_for('forms.new_feature'), method='post', name='feature')
 						= request_form.hidden_tag()
 						.form-group
 							{{ request_form.title(placeholder='title', class='form-control') }}
@@ -30,14 +30,14 @@ block main
 						button.btn.btn-success(type='submit') Create
 				.col-md-3.col-md-offset-2
 					h3 Add new client
-					form(action=url_for('new_client'), method='post', name='client')
+					form(action=url_for('forms.new_client'), method='post', name='client')
 						= client_form.hidden_tag()
 						.form-group
 							{{ client_form.name(placeholder='New Client Name', class='form-control') }}
 						button.btn.btn-success(type='submit') Create
 					hr
 					h3 Add new Product Area
-					form(action=url_for('new_product_area'), method='post', name='client')
+					form(action=url_for('forms.new_product_area'), method='post', name='client')
 						= product_form.hidden_tag()
 						.form-group
 							{{ product_form.name(placeholder='New Product Area', class='form-control') }}
