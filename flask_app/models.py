@@ -52,7 +52,7 @@ def check_new_features(added_objects):
             else:
                 for f in priorities.filter(Feature.client_priority >= feature.client_priority).all():
                     f.client_priority += 1
-            feature.client_priority = min(len(priorities.all()) + 1, feature.client_priority)  # To keep the priorities list only consequetive integers
+                feature.client_priority = min(len(priorities.all()) + 1, feature.client_priority)  # To keep the priorities list only consequetive integers
 
 
 def check_removed_features(removed_objects):
