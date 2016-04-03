@@ -7,61 +7,61 @@ from flask_app import create_app, db
 from flask_app import models
 
 class ModelsTest(TestCase):
-	
-	render_templates = False
-	
-	def create_app(self):
-		return create_app('testing', testing=True)
-		
-	def setUp(self):
-		db.create_all()
-		db.session.add(models.Client('test_client'))
-		db.session.add(models.Product('test_product'))
-		db.session.commit()
-		
-	def tearDown(self):
-		db.session.remove()
-		db.drop_all()
-		
+    
+    render_templates = False
+    
+    def create_app(self):
+        return create_app('testing', testing=True)
+        
+    def setUp(self):
+        db.create_all()
+        db.session.add(models.Client('test_client'))
+        db.session.add(models.Product('test_product'))
+        db.session.commit()
+        
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        
 
-class FeaturesTest(TestCase):
+class FeaturesTest(ModelsTest):
     """ Split off for organization. As number of tests grew, would probably consider it's own file """
 
-	def test_feature_priority_count(self):
-		test_feature = models.Feature('test_priority_count', '', 1, None, date.today(), '', 1)
-		db.session.add(test_feature)
-		db.session.commit()
-		self.assertTrue(test_feature in db.session)
-		self.assertEqual(db.session.query(models.Feature).first().client_priority, 1)
-		
-	
-	def test_feature_priority_greater_than_zero(self):
-		test_feature = models.Feature('test_priority_greater_than_zero', '', 1, -1, date.today(), '', 1)
-		db.session.add(test_feature)
-		db.session.commit()
-		self.assertTrue(test_feature in db.session)
-		self.assertEqual(db.session.query(models.Feature).all()[0].client_priority, 1)
-		
-	def test_feature_priority_shrink(self):
-		db.session.add(models.Feature('test_priority_shrink_1', '', 1, None, date.today(), '', 1))
-		db.session.add(models.Feature('test_priority_shrink_2', '', 1, None, date.today(), '', 1))
-		db.session.add(models.Feature('test_priority_shrink_3', '', 1, None, date.today(), '', 1))
-		db.session.commit()
-		self.assertEqual(len(db.session.query(models.Feature).all()), 3)
-		db.session.delete(db.session.query(models.Feature).all()[1])
-		db.session.commit()
-		self.assertEqual(sorted([x.client_priority for x in db.session.query(models.Feature).all()]), [1, 2])
-		
-	def test_feature_priority_too_high(self):
-		db.session.add(models.Feature('test_priority_too_high', '', 1, 7, date.today(), '', 1))
-		db.session.commit()
-		self.assertEqual(len(db.session.query(models.Feature).all()), 1)
-		self.assertEqual(db.session.query(models.Feature).first().client_priority, 1)
-		
-	def test_feature_priority_shift(self):
-		db.session.add(models.Feature('test_priority_shift_1', '', 1, 1, date.today(), '', 1))
-		db.session.commit()
-		db.session.add(models.Feature('test_priority_shift_2', '', 1, 1, date.today(), '', 1))
-		db.session.commit()
-		self.assertEqual(db.session.query(models.Feature).first().client_priority, 2)
-		self.assertEqual(db.session.query(models.Feature).all()[-1].client_priority, 1)
+    def test_feature_priority_count(self):
+        test_feature = models.Feature('test_priority_count', '', 1, None, date.today(), '', 1)
+        db.session.add(test_feature)
+        db.session.commit()
+        self.assertTrue(test_feature in db.session)
+        self.assertEqual(db.session.query(models.Feature).first().client_priority, 1)
+        
+    
+    def test_feature_priority_greater_than_zero(self):
+        test_feature = models.Feature('test_priority_greater_than_zero', '', 1, -1, date.today(), '', 1)
+        db.session.add(test_feature)
+        db.session.commit()
+        self.assertTrue(test_feature in db.session)
+        self.assertEqual(db.session.query(models.Feature).all()[0].client_priority, 1)
+        
+    def test_feature_priority_shrink(self):
+        db.session.add(models.Feature('test_priority_shrink_1', '', 1, None, date.today(), '', 1))
+        db.session.add(models.Feature('test_priority_shrink_2', '', 1, None, date.today(), '', 1))
+        db.session.add(models.Feature('test_priority_shrink_3', '', 1, None, date.today(), '', 1))
+        db.session.commit()
+        self.assertEqual(len(db.session.query(models.Feature).all()), 3)
+        db.session.delete(db.session.query(models.Feature).all()[1])
+        db.session.commit()
+        self.assertEqual(sorted([x.client_priority for x in db.session.query(models.Feature).all()]), [1, 2])
+        
+    def test_feature_priority_too_high(self):
+        db.session.add(models.Feature('test_priority_too_high', '', 1, 7, date.today(), '', 1))
+        db.session.commit()
+        self.assertEqual(len(db.session.query(models.Feature).all()), 1)
+        self.assertEqual(db.session.query(models.Feature).first().client_priority, 1)
+        
+    def test_feature_priority_shift(self):
+        db.session.add(models.Feature('test_priority_shift_1', '', 1, 1, date.today(), '', 1))
+        db.session.commit()
+        db.session.add(models.Feature('test_priority_shift_2', '', 1, 1, date.today(), '', 1))
+        db.session.commit()
+        self.assertEqual(db.session.query(models.Feature).first().client_priority, 2)
+        self.assertEqual(db.session.query(models.Feature).all()[-1].client_priority, 1)
