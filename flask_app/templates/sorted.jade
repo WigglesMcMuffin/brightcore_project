@@ -11,8 +11,17 @@ block scripts
     script.
         var csrftoken = $('meta[name=csrf-token]').attr('content')
         $(function() {
-            $('#sortable').sortable();
+            $('#sortable').sortable({
+                update: function( event, ui ) {
+                    $('.icons .glyphicon').show();
+                    $('.icons:first .glyphicon:first').hide();
+                    $('.icons:last .glyphicon:last').hide();
+                    $('#update-font').text('Update')
+                }
+            });
             $('#sortable').disableSelection();
+            $('.icons:first .glyphicon:first').hide();
+            $('.icons:last .glyphicon:last').hide();
             $('#update').click(function(event) {
                 $return_values = $('li', '#sortable').map(
                     function(idx) { 
@@ -32,10 +41,19 @@ block scripts
                     type: "POST",
                     url: '{{ url_for('forms.priority_change', client_id=features[0].client_id) }}',
                     data: JSON.stringify({'priorities': $return_values}),
-                    success: null,
                     contentType: 'application/json',
                     dataType: 'json'
-                });
+                }).done(
+                    function(success, status, xhr) {
+                        $('#update-font').fadeOut(500, function() {
+                            $(this).text('Successfully Updated').fadeIn(500, function() {
+                                $('li', '#sortable').each(function(idx) {
+                                    $('.label', $(this)).text('# '+(idx + 1));
+                                });
+                            });
+                        });
+                    }
+                );
             });
         });
 
@@ -45,9 +63,20 @@ block main
             h1 
                 | Features for 
                 = features[0].client.name
+            p.text-right
+                small
+                    b(style="color: #5f5f5f;") (draggable)
             ul#sortable.list-group.client_features
                 for feature in features
                     li.list-group-item(data-priority=feature.client_priority)
+                        .icons
+                            span.glyphicon.glyphicon-chevron-up(aria-hidden="true")
+                            span.glyphicon.glyphicon-chevron-down(aria-hidden="true")
+                        | &nbsp;
+                        span.label.label-primary
+                            | #
+                            = feature.client_priority
+                        | &nbsp;
                         = feature.title
-                        span.badge= feature.client_priority
-            button#update.btn.btn-success(type='button') Update
+            button#update.btn.btn-success(type='button')
+                font#update-font Update

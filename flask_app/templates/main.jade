@@ -1,8 +1,20 @@
 extends base.jade
 
 block scripts
+    script(src='//cdnjs.cloudflare.com/ajax/libs/bootstrap-touchspin/3.1.1/jquery.bootstrap-touchspin.min.js')
     script.
         $('#dp1').datepicker({format: 'mm-dd-yyyy'});
+        $('#client_priority').TouchSpin({
+            min: 0,
+        });
+
+block stylesheets
+    style.
+        .no-gutter [class*="-5"] {
+            padding-left: 0;
+            padding-right: 0;
+            margin-bottom: 15px;
+        }
 
 block main
     .container-fluid
@@ -16,13 +28,14 @@ block main
                         .form-group
                             {{ request_form.title(placeholder='title', class='form-control') }}
                         .form-group
-                            {{ request_form.description(class='form-control') }}
+                            {{ request_form.description(placeholder='Feature description', class='form-control') }}
                         .form-group
                             {{ request_form.client_id(class='form-control') }}
-                        .form-group
-                            {{ request_form.client_priority(placeholder='Client Priority', class='form-control') }}
-                        .form-group
-                            {{ request_form.target_date(placeholder='Target Date', id='dp1', class='form-control') }}
+                        .form-group.no-gutter
+                            .col-md-5
+                                {{ request_form.client_priority(placeholder='Client Priority', id='client_priority', class='form-control') }}
+                            .col-md-5.col-md-offset-2
+                                {{ request_form.target_date(placeholder='Target Date', id='dp1', class='form-control') }}
                         .form-group
                             {{ request_form.ticket_url(placeholder='Ticket URL', class='form-control') }}
                         .form-group

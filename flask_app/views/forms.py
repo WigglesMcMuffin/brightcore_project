@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, flash, url_for, request
+from flask import Blueprint, redirect, flash, url_for, request, jsonify
 
 from flask_app import db, csrf
 from flask_app.forms import FeatureRequestForm, ClientForm, ProductAreaForm
@@ -62,4 +62,4 @@ def priority_change(client_id):
         feature.client_priority = new_priority
         db.session.add(feature)
     db.session.commit()
-    return '200 - Ok', 200
+    return jsonify(result='Ok'), 200
