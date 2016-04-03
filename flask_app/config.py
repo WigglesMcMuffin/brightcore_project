@@ -1,7 +1,7 @@
 def get_database_uri(env=None):
     if env == 'prod':
-        return ''  # return postgres or some such
+        return 'sqlite:////app/user/tmp/prod.db'
     elif env == 'testing':
-        return 'sqlite:////app/usr/tmp/test.db'
+        return 'sqlite:////code/tmp/test.db'
     else:
-        return 'sqlite:////app/usr/tmp/prod.db'
+        return 'sqlite:////code/usr/tmp/dev.db'
