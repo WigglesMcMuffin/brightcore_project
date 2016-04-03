@@ -1,0 +1,53 @@
+extends base.jade
+
+block stylesheets
+    link(rel="stylesheet", href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css")
+
+block head
+    meta(name='csrf-token', content=csrf_token())
+
+block scripts
+    script(src="//code.jquery.com/ui/1.11.4/jquery-ui.js")
+    script.
+        var csrftoken = $('meta[name=csrf-token]').attr('content')
+        $(function() {
+            $('#sortable').sortable();
+            $('#sortable').disableSelection();
+            $('#update').click(function(event) {
+                $return_values = $('a', '#sortable').map(
+                    function(idx) { 
+                        return [[$(this).attr('data-priority')*1, (idx + 1)]]; 
+                    }
+                ).sort(
+                    function(a, b) { 
+                        return a[0] - b[0]
+                    }
+                ).map(function(idx, value) { return value[1] }).get().join('_');
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken)
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: '{{ url_for('forms.priority_change', client_id=features[0].client_id) }}',
+                    data: JSON.stringify({'priorities': $return_values}),
+                    success: null,
+                    contentType: 'application/json',
+                    dataType: 'json'
+                });
+            });
+        });
+
+block main
+    .container-fluid
+        .row
+            h1 
+                | Features for 
+                = features[0].client.name
+            #sortable.list-group.client_features
+                for feature in features
+                    a.list-group-item(href=url_for('main.feature', feature_id=feature.id), data-priority=feature.client_priority)
+                        = feature.title
+                        span.badge= feature.client_priority
+            button#update.btn.btn-success(type='button') Update

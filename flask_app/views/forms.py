@@ -1,6 +1,6 @@
-from flask import Blueprint, redirect, flash, url_for
+from flask import Blueprint, redirect, flash, url_for, request
 
-from flask_app import db
+from flask_app import db, csrf
 from flask_app.forms import FeatureRequestForm, ClientForm, ProductAreaForm
 from flask_app.models import Feature, Client, Product
 
@@ -13,25 +13,15 @@ def new_feature():
     form.client_id.choices = [(c.id, c.name) for c in Client.query.all()]
     form.product_area_id.choices = [(p.id, p.name) for p in Product.query.all()]
     if form.validate_on_submit():
-        title = form.title.data
-        description = form.description.data
-        client_id = form.client_id.data
-        client_priority = form.client_priority.data
-        target_date = form.target_date.data
-        ticket_url = form.ticket_url.data
-        product_area_id = form.product_area_id.data
-        f = Feature(title=title,
-                    description=description,
-                    client_id=client_id,
-                    client_priority=client_priority,
-                    target_date=target_date,
-                    ticket_url=ticket_url,
-                    product_area_id=product_area_id)
+        f = Feature()
+        form.populate_obj(f)
         db.session.add(f)
         db.session.commit()
         flash('Feature added', 'list-group-item-success')
     else:
         flash('Feature addition failed', 'list-group-item-danger')
+        for field, errors in form.errors.items():
+            flash('%s: %s' %(field, ', '.join([str(x) for x in errors])), 'list-group-item-danger')
     return redirect(url_for('main.main_page'))
 
 
@@ -61,3 +51,15 @@ def new_product_area():
     else:
         flash('Product Area addition failed', 'list-group-item-warning')
     return redirect(url_for('main.main_page'))
+
+@form_endpoints.route('/priorities/<int:client_id>/', methods=['POST'])
+def priority_change(client_id):
+    # Normally these sorts of changes would be behind something like logins or other protections that would be checked
+    json_objects = request.get_json()
+    new_priorities = str(json_objects['priorities']).split('_')
+    features = Feature.query.filter(Feature.client_id == client_id).order_by(Feature.client_priority).all()
+    for feature, new_priority in zip(features, new_priorities):
+        feature.client_priority = new_priority
+        db.session.add(feature)
+    db.session.commit()
+    return '200 - Ok', 200

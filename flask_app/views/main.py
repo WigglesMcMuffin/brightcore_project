@@ -21,7 +21,7 @@ def main_page():
                            product_form=product_form)
 
 
-@main_site.route('/features')
+@main_site.route('/features/')
 def features():
     def keyfunc(x):
         return x.client.name
@@ -32,9 +32,17 @@ def features():
                            features_by_client=features_by_client)
 
 
-@main_site.route('/features/<feature_id>')
+@main_site.route('/features/<feature_id>/')
 def feature(feature_id):
     selected_feature = Feature.query.get(feature_id)
     return render_template('feature.jade',
-                           pageTitle='Home Page',
+                           pageTitle='Feature - %s' % (selected_feature.title),
                            feature=selected_feature)
+
+
+@main_site.route('/features/<client_id>/sort/')
+def sort_features(client_id):
+    selected_features = sorted(Feature.query.filter(Feature.client_id == client_id).all(), key=lambda x: x.client_priority)
+    return render_template('sorted.jade',
+                           pageTitle='Sort Featurse',
+                           features=selected_features)

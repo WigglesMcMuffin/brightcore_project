@@ -1,9 +1,12 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CsrfProtect
 from flask_app import config
+
 import pyjade
 
 db = SQLAlchemy()
+csrf = CsrfProtect()
 
 def create_app(env=None, debug=False, testing=False):
     app = Flask(__name__)
@@ -17,6 +20,7 @@ def create_app(env=None, debug=False, testing=False):
     app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 
     db.init_app(app)
+    csrf.init_app(app)
 
     from flask_app.views.main import main_site
     from flask_app.views.forms import form_endpoints

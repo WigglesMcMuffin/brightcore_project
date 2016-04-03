@@ -2,3 +2,4 @@ env/
 
 gunicorn.access.log gunicorn.error.log
 *__pycache__*
+*.pyc

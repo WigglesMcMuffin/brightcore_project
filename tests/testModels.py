@@ -23,6 +23,10 @@ class ModelsTest(TestCase):
 		db.session.remove()
 		db.drop_all()
 		
+
+class FeaturesTest(TestCase):
+    """ Split off for organization. As number of tests grew, would probably consider it's own file """
+
 	def test_feature_priority_count(self):
 		test_feature = models.Feature('test_priority_count', '', 1, None, date.today(), '', 1)
 		db.session.add(test_feature)
