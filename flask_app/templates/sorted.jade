@@ -14,7 +14,7 @@ block scripts
             $('#sortable').sortable();
             $('#sortable').disableSelection();
             $('#update').click(function(event) {
-                $return_values = $('a', '#sortable').map(
+                $return_values = $('li', '#sortable').map(
                     function(idx) { 
                         return [[$(this).attr('data-priority')*1, (idx + 1)]]; 
                     }
@@ -45,9 +45,9 @@ block main
             h1 
                 | Features for 
                 = features[0].client.name
-            #sortable.list-group.client_features
+            ul#sortable.list-group.client_features
                 for feature in features
-                    a.list-group-item(href=url_for('main.feature', feature_id=feature.id), data-priority=feature.client_priority)
+                    li.list-group-item(data-priority=feature.client_priority)
                         = feature.title
                         span.badge= feature.client_priority
             button#update.btn.btn-success(type='button') Update
