@@ -1,6 +1,6 @@
 web:
     build: .
-    command: 'bash -c ''gunicorn -c gunicorn_conf.py "flask_app:create_app()"'''
+    command: 'bash -c ''gunicorn -c gunicorn_conf.py flask_app:create_app(env="prod")'''
     working_dir: /app/user
     environment:
         PORT: 8080
