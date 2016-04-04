@@ -16,7 +16,7 @@ def populate_tables(db_session):
         db_session.session.commit()
 
 if __name__ == '__main__':
-    app = create_app()
+    app = create_app(env='prod')
     with app.app_context():
         db.create_all()
         populate_tables(db)

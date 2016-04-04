@@ -1,7 +1,9 @@
+import os
+
 def get_database_uri(env=None):
     if env == 'prod':
-        return 'sqlite:////app/user/tmp/prod.db'
+        return os.environ['DATABASE_URL']
     elif env == 'testing':
         return 'sqlite:////code/tmp/test.db'
     else:
-        return 'sqlite:////code/usr/tmp/dev.db'
+        return 'sqlite:////code/tmp/dev.db'
